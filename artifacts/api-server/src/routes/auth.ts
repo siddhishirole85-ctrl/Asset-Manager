@@ -1,7 +1,7 @@
 import { Router, type IRouter } from "express";
 import bcrypt from "bcryptjs";
 import { db, usersTable } from "@workspace/db";
-import { eq } from "drizzle-orm";
+import { eq, count } from "drizzle-orm";
 import { requireAuth, signToken } from "../middlewares/auth";
 
 const router: IRouter = Router();
@@ -24,8 +24,11 @@ router.post("/auth/register", async (req, res): Promise<void> => {
     return;
   }
 
+  const [userCount] = await db.select({ total: count() }).from(usersTable);
+  const role = (userCount?.total ?? 0) === 0 ? "admin" : "user";
+
   const passwordHash = await bcrypt.hash(password, 10);
-  const [user] = await db.insert(usersTable).values({ name, email, passwordHash, role: "user" }).returning();
+  const [user] = await db.insert(usersTable).values({ name, email, passwordHash, role }).returning();
 
   const token = signToken({ userId: user.id, role: user.role });
   res.status(201).json({
