@@ -3,13 +3,23 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Library Management System API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Authentication operations
+  - name: books
+    description: Book management operations
+  - name: borrows
+    description: Borrow and return operations
+  - name: users
+    description: User management operations
+  - name: dashboard
+    description: Dashboard statistics
 paths:
   /healthz:
     get:
@@ -24,7 +34,301 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /auth/register:
+    post:
+      operationId: register
+      tags: [auth]
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterInput"
+      responses:
+        "201":
+          description: Registered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Bad request
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: Logged in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current user profile
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Unauthorized
+
+  /books:
+    get:
+      operationId: getBooks
+      tags: [books]
+      summary: List all books
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: category
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of books
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Book"
+    post:
+      operationId: createBook
+      tags: [books]
+      summary: Create a new book (Admin only)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+
+  /books/{id}:
+    get:
+      operationId: getBook
+      tags: [books]
+      summary: Get a book by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Book
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        "404":
+          description: Not found
+    put:
+      operationId: updateBook
+      tags: [books]
+      summary: Update a book (Admin only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+    delete:
+      operationId: deleteBook
+      tags: [books]
+      summary: Delete a book (Admin only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /borrows:
+    post:
+      operationId: borrowBook
+      tags: [borrows]
+      summary: Borrow a book
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BorrowInput"
+      responses:
+        "201":
+          description: Borrowed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Borrow"
+        "400":
+          description: Book unavailable or already borrowed
+    get:
+      operationId: getAllBorrows
+      tags: [borrows]
+      summary: Get all borrows (Admin only)
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of borrows
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Borrow"
+
+  /borrows/my:
+    get:
+      operationId: getMyBorrows
+      tags: [borrows]
+      summary: Get current user borrows
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: User borrows
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Borrow"
+
+  /borrows/{id}/return:
+    put:
+      operationId: returnBook
+      tags: [borrows]
+      summary: Return a borrowed book
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Returned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Borrow"
+        "404":
+          description: Borrow record not found
+
+  /users:
+    get:
+      operationId: getUsers
+      tags: [users]
+      summary: Get all users (Admin only)
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+
+  /dashboard/stats:
+    get:
+      operationId: getDashboardStats
+      tags: [dashboard]
+      summary: Get dashboard statistics
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Dashboard statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardStats"
+
+  /books/categories:
+    get:
+      operationId: getCategories
+      tags: [books]
+      summary: Get all book categories
+      responses:
+        "200":
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     HealthStatus:
       type: object
@@ -34,3 +338,168 @@ components:
       required:
         - status
 
+    RegisterInput:
+      type: object
+      required: [name, email, password]
+      properties:
+        name:
+          type: string
+          minLength: 2
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 6
+
+    LoginInput:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+
+    AuthResponse:
+      type: object
+      required: [token, user]
+      properties:
+        token:
+          type: string
+        user:
+          $ref: "#/components/schemas/User"
+
+    User:
+      type: object
+      required: [id, name, email, role, createdAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum: [admin, user]
+        createdAt:
+          type: string
+          format: date-time
+
+    Book:
+      type: object
+      required: [id, title, author, category, totalCopies, availableCopies, createdAt]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        author:
+          type: string
+        category:
+          type: string
+        description:
+          type: ["string", "null"]
+        isbn:
+          type: ["string", "null"]
+        totalCopies:
+          type: integer
+        availableCopies:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+
+    BookInput:
+      type: object
+      required: [title, author, category, totalCopies]
+      properties:
+        title:
+          type: string
+          minLength: 1
+        author:
+          type: string
+          minLength: 1
+        category:
+          type: string
+          minLength: 1
+        description:
+          type: string
+        isbn:
+          type: string
+        totalCopies:
+          type: integer
+          minimum: 1
+
+    BookUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+        author:
+          type: string
+          minLength: 1
+        category:
+          type: string
+          minLength: 1
+        description:
+          type: string
+        isbn:
+          type: string
+        totalCopies:
+          type: integer
+          minimum: 1
+
+    BorrowInput:
+      type: object
+      required: [bookId]
+      properties:
+        bookId:
+          type: integer
+
+    Borrow:
+      type: object
+      required: [id, userId, bookId, borrowDate, status]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        bookId:
+          type: integer
+        borrowDate:
+          type: string
+          format: date-time
+        returnDate:
+          type: ["string", "null"]
+          format: date-time
+        dueDate:
+          type: ["string", "null"]
+          format: date-time
+        status:
+          type: string
+          enum: [issued, returned]
+        book:
+          $ref: "#/components/schemas/Book"
+        user:
+          $ref: "#/components/schemas/User"
+
+    DashboardStats:
+      type: object
+      required: [totalBooks, totalUsers, activeBorrows, totalBorrows, availableBooks, overdueBooks]
+      properties:
+        totalBooks:
+          type: integer
+        totalUsers:
+          type: integer
+        activeBorrows:
+          type: integer
+        totalBorrows:
+          type: integer
+        availableBooks:
+          type: integer
+        overdueBooks:
+          type: integer

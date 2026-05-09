@@ -1,0 +1,173 @@
+Here’s a *clean copy-paste prompt for Replit AI (Agent)*. Just paste it as-is:
+
+---
+
+## 🚀 Replit AI Prompt (Library Management System Full Stack)
+
+Build a *Full Stack Library Management System Web Application* with a modern UI, backend APIs, and full frontend-backend integration.
+
+---
+
+## 🧠 Tech Stack (Must Use)
+
+* Frontend: React (Vite preferred)
+* Backend: Node.js + Express.js
+* Database: MongoDB with Mongoose
+* API calls: Axios
+* Authentication: JWT
+
+---
+
+## 🎯 FEATURES
+
+### 👤 Authentication
+
+* User Register
+* User Login
+* Admin Login
+* JWT authentication
+* Protected routes (frontend + backend)
+
+---
+
+### 📚 BOOK MANAGEMENT (ADMIN)
+
+* Add Book (title, author, category, available copies)
+* Edit Book
+* Delete Book
+* View all books
+* Search books
+
+---
+
+### 📖 USER FEATURES
+
+* View all books in UI cards/table
+* Search and filter books
+* Borrow book
+* Return book
+* View borrowed books history
+
+---
+
+### 🔄 BORROW SYSTEM
+
+* Track borrow date
+* Track return date
+* Update status (Issued / Returned)
+* Prevent borrowing same book if unavailable
+
+---
+
+## 🎨 FRONTEND UI REQUIREMENTS
+
+* Modern dashboard UI
+* Sidebar navigation:
+
+  * Dashboard
+  * Books
+  * Borrowed Books
+  * Users (Admin only)
+* Responsive design (mobile + desktop)
+* Clean cards UI for books
+* Tables for admin panel
+* Loading spinners + alerts/toasts
+
+---
+
+## 🔗 BACKEND API ENDPOINTS
+
+### Auth
+
+* POST /api/auth/register
+* POST /api/auth/login
+
+### Books
+
+* GET /api/books
+* POST /api/books
+* PUT /api/books/:id
+* DELETE /api/books/:id
+
+### Borrow
+
+* POST /api/borrow
+* GET /api/borrow/user/:id
+* PUT /api/return/:id
+
+---
+
+## 🔐 SECURITY
+
+* Password hashing using bcrypt
+* JWT authentication middleware
+* Role-based access (Admin/User)
+* Input validation
+
+---
+
+## 📂 PROJECT STRUCTURE
+
+### Frontend
+
+
+/frontend
+  /src
+    /components
+    /pages
+    /services
+    /context
+
+
+### Backend
+
+
+/backend
+  /models
+  /routes
+  /controllers
+  /middleware
+  server.js
+
+
+---
+
+## ⚙️ INTEGRATION RULES
+
+* Frontend must call backend APIs using Axios
+* Store JWT token in localStorage
+* Protect frontend routes based on login
+* Backend must allow CORS for frontend
+
+---
+
+## 🚀 FINAL OUTPUT
+
+Create a fully working *Library Management System* with:
+
+* Login/Register system
+* Admin dashboard
+* Book CRUD system
+* Borrow & return system
+* Fully connected frontend + backend
+* Clean professional UI
+
+---
+
+If possible, also:
+
+* Add dashboard stats (total books, users, borrowed books)
+* Add toast notifications
+* Add dark mode toggle
+
+---
+
+## ✅ IMPORTANT
+
+Make sure the project runs with:
+
+* npm install
+* npm run dev (frontend)
+* node server.js (backend)
+
+---
