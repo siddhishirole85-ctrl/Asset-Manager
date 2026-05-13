@@ -17,7 +17,7 @@ A full-stack Library Management System where admins manage books and users, and 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
 - Frontend: React 19 + Vite, TailwindCSS, shadcn/ui, React Query, Wouter (routing)
 - API: Express 5
-- DB: PostgreSQL + Drizzle ORM
+- DB: MySQL + Drizzle ORM
 - Auth: JWT (Bearer token), bcryptjs, stored in localStorage
 - Validation: Zod (`zod/v4`), `drizzle-zod`
 - API codegen: Orval (from OpenAPI spec in `lib/api-spec`)
